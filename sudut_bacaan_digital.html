@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8f1e5">
+<title>Sudut Bacaan Digital • 多语数字阅读角</title>
+<style>
+:root {
+  --cream: #fbf6ec;
+  --paper: #fffdf8;
+  --ink: #3f382f;
+  --muted: #776d60;
+  --green: #6d8b70;
+  --green-dark: #47664d;
+  --sage: #dce8d8;
+  --peach: #f4c9a8;
+  --yellow: #f3df9a;
+  --pink: #f1d6d1;
+  --lavender: #ded8ef;
+  --line: #e9dfcf;
+  --shadow: 0 8px 24px rgba(75,59,39,.08);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Trebuchet MS", system-ui, -apple-system, sans-serif, "PingFang SC", "Microsoft YaHei";
+  line-height: 1.6;
+}
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+
+.wrap { width: min(1120px, 92%); margin: auto; }
+
+/* Topbar */
+.topbar { background: #e7eddf; border-bottom: 1px solid #d8e1d1; font-size: 0.88rem; color: #536750; }
+.topbar .wrap { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; align-items: center; flex-wrap: wrap; }
+
+/* Language Switcher */
+.lang-switcher { display: flex; gap: 4px; background: #d7e2cf; padding: 3px; border-radius: 99px; }
+.lang-btn { border: none; background: transparent; padding: 4px 12px; border-radius: 99px; font-size: 0.82rem; font-weight: 800; color: #536750; transition: all 0.2s; }
+.lang-btn.active { background: var(--green-dark); color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+
+/* Header */
+header { position: sticky; top: 0; z-index: 10; background: rgba(251,246,236,0.96); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(233,223,207,0.8); }
+.nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 800; }
+.brand-mark { width: 44px; height: 44px; border-radius: 14px; background: var(--green); display: grid; place-items: center; font-size: 1.5rem; color: #fff; }
+.brand-name { font-family: Georgia, serif; font-size: 1.12rem; line-height: 1.15; }
+.brand-name small { display: block; font: 500 0.72rem "Trebuchet MS", sans-serif; letter-spacing: 0.5px; color: var(--muted); margin-top: 3px; }
+.navlinks { display: flex; gap: 22px; align-items: center; font-size: 0.94rem; font-weight: 700; color: #665d51; }
+.navlinks a:hover { color: var(--green-dark); }
+.menu-toggle { display: none; border: 1px solid var(--line); background: var(--paper); border-radius: 12px; padding: 8px 12px; font-weight: 700; }
+
+/* Hero */
+.hero { padding: 40px 0 30px; overflow: hidden; }
+.hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; align-items: center; gap: 32px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; background: #e7eddf; color: var(--green-dark); border-radius: 99px; padding: 6px 14px; font-size: 0.83rem; font-weight: 800; }
+h1, h2, h3 { font-family: Georgia, serif; line-height: 1.18; }
+h1 { font-size: clamp(2.2rem, 4.5vw, 4rem); letter-spacing: -1px; margin: 16px 0; }
+h1 span { color: var(--green-dark); font-style: italic; }
+.hero p { font-size: 1.02rem; max-width: 500px; color: var(--muted); margin: 0 0 24px; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 14px; padding: 12px 20px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(75,59,39,0.12); }
+.btn-primary { background: var(--green-dark); color: white; }
+.btn-secondary { background: var(--paper); border: 1px solid var(--line); color: var(--ink); }
+
+.hero-note { display: flex; align-items: center; gap: 10px; margin-top: 20px; color: var(--muted); font-size: 0.88rem; }
+.avatar-stack { display: flex; }
+.avatar-stack span { width: 28px; height: 28px; border: 2px solid var(--cream); border-radius: 50%; display: grid; place-items: center; margin-left: -6px; background: var(--yellow); font-size: 0.85rem; }
+.avatar-stack span:first-child { margin-left: 0; background: var(--pink); }
+
+/* Decorative Illustration Scene */
+.scene { min-height: 320px; position: relative; display: grid; place-items: center; }
+.scene-bg { position: absolute; width: 90%; height: 88%; border-radius: 48% 48% 30px 30px; background: #e8e4d5; bottom: 0; }
+.sun { position: absolute; width: 70px; height: 70px; border-radius: 50%; background: var(--yellow); top: 20px; right: 10%; }
+.bookcase { position: relative; z-index: 1; width: 75%; height: 230px; background: #b9865e; border: 8px solid #a87550; border-radius: 12px 12px 5px 5px; box-shadow: 0 15px 0 #986746, 0 20px 20px rgba(0,0,0,0.08); display: grid; grid-template-rows: 1fr 1fr; gap: 8px; padding: 8px; }
+.shelf { border-bottom: 8px solid #a87550; display: flex; align-items: flex-end; justify-content: center; gap: 6px; padding: 0 8px 6px; }
+.book { width: 17%; height: 80%; border-radius: 4px 4px 1px 1px; }
+.book.b1{background:#7c9a78;height:82%}.book.b2{background:#e8c86f;height:91%}.book.b3{background:#d98976;height:72%}.book.b4{background:#7c91b3;height:86%}.book.b5{background:#d9b7c8;height:76%}.book.b6{background:#6d8b70;height:91%}.book.b7{background:#d9a35e;height:72%}.book.b8{background:#9d8bbd;height:82%}
+.plant { position: absolute; z-index: 2; bottom: 6%; left: 4%; font-size: 3.5rem; }
+.teddy { position: absolute; z-index: 3; bottom: 2%; right: 6%; font-size: 4rem; }
+
+/* Sections */
+.section { padding: 45px 0; }
+.section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; margin-bottom: 24px; }
+.kicker { text-transform: uppercase; letter-spacing: 1.5px; color: var(--green-dark); font-size: 0.76rem; font-weight: 900; }
+h2 { font-size: clamp(1.7rem, 3.2vw, 2.5rem); margin: 6px 0 0; letter-spacing: -0.5px; }
+.section-head p { max-width: 440px; margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+/* Categories */
+.category-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.category { border: 1px solid var(--line); border-radius: 18px; padding: 16px; background: var(--paper); transition: transform 0.2s, box-shadow 0.2s; min-height: 130px; cursor: pointer; }
+.category:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.category-icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; font-size: 1.5rem; margin-bottom: 8px; }
+.category:nth-child(1) .category-icon { background: #f7e3b2; }
+.category:nth-child(2) .category-icon { background: #dce8d8; }
+.category:nth-child(3) .category-icon { background: #f2d9d5; }
+.category:nth-child(4) .category-icon { background: #ded8ef; }
+.category:nth-child(5) .category-icon { background: #fce8cc; }
+.category h3 { font: 800 0.98rem "Trebuchet MS", sans-serif; margin: 0 0 4px; }
+.category p { font-size: 0.8rem; color: var(--muted); margin: 0; }
+
+/* Books Section */
+.books-section { background: #f3eee3; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.filter { border: 1px solid #e3d9c9; background: #fffaf1; border-radius: 99px; padding: 7px 16px; color: #6c6256; font-weight: 800; font-size: 0.85rem; }
+.filter.active, .filter:hover { background: var(--green-dark); border-color: var(--green-dark); color: white; }
+
+.book-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.book-card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+.book-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+/* Book Cover Styling */
+.cover { height: 210px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; background-size: cover; background-position: center; background-repeat: no-repeat; padding: 12px; }
+.cover-label { align-self: flex-start; background: rgba(255, 253, 240, 0.92); backdrop-filter: blur(4px); border-radius: 99px; padding: 4px 10px; font-size: 0.68rem; font-weight: 900; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.upload-btn-label { align-self: flex-end; background: rgba(255, 255, 255, 0.92); padding: 4px 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; color: var(--ink); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 4px; transition: background 0.2s; }
+.upload-btn-label:hover { background: #ffffff; }
+.cover-input { display: none; }
+
+.book-info { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+.book-info h3 { font-size: 1.1rem; margin: 0 0 6px; color: var(--ink); }
+.book-author { font-size: 0.84rem; color: var(--muted); font-weight: 700; margin-bottom: 8px; }
+.book-info p { font-size: 0.86rem; color: var(--muted); margin: 0 0 14px; flex: 1; }
+.book-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--muted); margin-bottom: 14px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.read-link { display: flex; justify-content: center; align-items: center; border-radius: 11px; background: #e7eddf; color: var(--green-dark); padding: 10px; font-size: 0.88rem; font-weight: 900; border: 0; width: 100%; transition: background 0.2s; }
+.read-link:hover { background: #d6e4d0; }
+.empty-note { display: none; background: var(--paper); border: 1px dashed #d8cbb8; padding: 25px; border-radius: 16px; color: var(--muted); text-align: center; }
+
+/* Modal */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); z-index: 100; display: none; place-items: center; padding: 16px; }
+.modal-overlay.open { display: grid; }
+.modal-content { background: var(--paper); border-radius: 20px; width: min(650px, 100%); max-height: 88vh; overflow-y: auto; padding: 26px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; }
+.modal-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 18px; }
+.modal-badge { background: var(--sage); color: var(--green-dark); font-size: 0.75rem; font-weight: 900; padding: 4px 10px; border-radius: 99px; display: inline-block; margin-bottom: 6px; }
+.modal-title { font-size: 1.6rem; margin: 0 0 4px; }
+.modal-author { color: var(--muted); font-weight: 700; font-size: 0.9rem; }
+.modal-close { background: #f1ece3; border: 0; border-radius: 50%; width: 34px; height: 34px; display: grid; place-items: center; font-size: 1.1rem; color: var(--muted); }
+.modal-close:hover { background: #e3dcce; }
+.modal-details { display: grid; gap: 14px; background: #f9f5ed; padding: 18px; border-radius: 14px; border: 1px solid var(--line); margin-bottom: 18px; }
+.modal-detail-item h4 { margin: 0 0 4px; font-size: 0.9rem; color: var(--green-dark); }
+.modal-detail-item p { margin: 0; font-size: 0.92rem; color: var(--ink); white-space: pre-line; }
+.modal-actions { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+
+/* Journey & Quote */
+.journey { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; align-items: stretch; }
+.journey-card { border-radius: 20px; padding: 26px; background: #e4ecde; position: relative; overflow: hidden; }
+.journey-card h2 { max-width: 400px; }
+.journey-card p { color: #596b57; max-width: 440px; }
+.journey-art { font-size: 4.5rem; position: absolute; right: 18px; bottom: 8px; opacity: 0.9; }
+.quote-card { border-radius: 20px; padding: 26px; background: #f2ded7; display: flex; flex-direction: column; justify-content: center; position: relative; }
+.quote-mark { font: 3.5rem Georgia, serif; color: #b77f70; line-height: 0.6; }
+.quote-card blockquote { font: italic 1.35rem/1.4 Georgia, serif; margin: 10px 0 14px; }
+.quote-card small { color: #8d6257; font-weight: 800; }
+
+/* Footer */
+footer { background: #3f5140; color: #f9f5eb; padding: 30px 0 20px; }
+.footer-main { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+.footer-brand { display: flex; align-items: center; gap: 10px; font-family: Georgia, serif; font-size: 1.15rem; }
+.footer-brand .brand-mark { background: #789575; width: 36px; height: 36px; border-radius: 10px; font-size: 1.2rem; }
+.footer-main p { max-width: 400px; color: #d9e1d5; font-size: 0.88rem; margin: 6px 0 0; }
+.footer-bottom { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 16px; color: #d9e1d5; font-size: 0.78rem; }
+
+/* Responsive Breaks */
+@media(max-width: 1024px) { .category-grid { grid-template-columns: repeat(3, 1fr); } }
+@media(max-width: 880px) { .book-grid { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 10px; }
+  .hero-copy { text-align: center; }
+  .hero-copy p { margin-left: auto; margin-right: auto; }
+  .actions, .hero-note { justify-content: center; }
+  .scene { min-height: 280px; }
+  .journey { grid-template-columns: 1fr; }
+  .section-head { align-items: flex-start; flex-direction: column; }
+}
+@media(max-width: 600px) {
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .book-grid { grid-template-columns: 1fr; }
+  .topbar .wrap { justify-content: center; text-align: center; }
+  .menu-toggle { display: block; }
+  .navlinks { display: none; position: absolute; left: 4%; right: 4%; top: 68px; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); flex-direction: column; align-items: stretch; }
+  .navlinks.open { display: flex; }
+  .cover { height: 180px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <span data-i18n="top_subtitle">📚 Ruang kecil untuk imaginasi yang besar</span>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span data-i18n="top_welcome">Selamat datang ke Sudut Bacaan Digital ✨</span>
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLanguage('ms')">MS</button>
+        <button class="lang-btn" onclick="setLanguage('zh')">中文</button>
+        <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#utama" aria-label="Sudut Bacaan Digital">
+      <span class="brand-mark">📖</span>
+      <span class="brand-name">Sudut Bacaan<small data-i18n="brand_sub">DIGITAL • BACA • TEROKA</small></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Buka menu">☰ Menu</button>
+    <nav class="navlinks" id="navLinks" aria-label="Navigasi utama">
+      <a href="#utama" data-i18n="nav_home">Utama</a>
+      <a href="#kategori" data-i18n="nav_cat">Kategori</a>
+      <a href="#koleksi" data-i18n="nav_books">Koleksi Buku</a>
+      <a href="#aktiviti" data-i18n="nav_read">Jom Membaca</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="utama">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow" data-i18n="hero_eyebrow">🌿 Selamat datang, pembaca cilik!</span>
+        <h1 data-i18n="hero_title">Setiap buku,<br><span>sebuah pengembaraan.</span></h1>
+        <p data-i18n="hero_desc">Singgah sebentar, pilih sebuah buku dan biarkan imaginasi membawa kamu ke dunia yang baharu. Sudut bacaan kita sentiasa terbuka untuk diterokai!</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#koleksi" data-i18n="hero_btn1">📚 Teroka Buku <span>→</span></a>
+          <a class="btn btn-secondary" href="#kategori" data-i18n="hero_btn2">Cari Ikut Kategori</a>
+        </div>
+        <div class="hero-note">
+          <div class="avatar-stack"><span>🐻</span><span>🦊</span><span>🐰</span></div>
+          <span data-i18n="hero_note">Tempat yang selesa untuk membaca dan berimaginasi.</span>
+        </div>
+      </div>
+      <div class="scene" aria-label="Ilustrasi perpustakaan mini">
+        <div class="scene-bg"></div><div class="sun"></div>
+        <div class="bookcase">
+          <div class="shelf"><span class="book b1"></span><span class="book b2"></span><span class="book b3"></span><span class="book b4"></span></div>
+          <div class="shelf"><span class="book b5"></span><span class="book b6"></span><span class="book b7"></span><span class="book b8"></span></div>
+        </div>
+        <div class="plant">🪴</div><div class="teddy">🧸</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="kategori">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="kicker" data-i18n="cat_kicker">Pilih pengembaraan</div>
+          <h2 data-i18n="cat_title">Teroka ikut kategori</h2>
+        </div>
+        <p data-i18n="cat_desc">Setiap kategori membawa cerita dan pengetahuan yang berbeza. Pilih yang paling menarik perhatian kamu!</p>
+      </div>
+      <div class="category-grid">
+        <div class="category" data-category="Cerita">
+          <div class="category-icon">🦊</div>
+          <h3 data-i18n="cat_1_t">Cerita & Dongeng</h3>
+          <p data-i18n="cat_1_d">Kisah menarik penuh imaginasi.</p>
+        </div>
+        <div class="category" data-category="Ilmu">
+          <div class="category-icon">🌱</div>
+          <h3 data-i18n="cat_2_t">Ilmu & Pengetahuan</h3>
+          <p data-i18n="cat_2_d">Kenali dunia di sekeliling kita.</p>
+        </div>
+        <div class="category" data-category="Bahasa">
+          <div class="category-icon">✏️</div>
+          <h3 data-i18n="cat_3_t">Bahasa & Perkataan</h3>
+          <p data-i18n="cat_3_d">Belajar perkataan baharu.</p>
+        </div>
+        <div class="category" data-category="Sejarah">
+          <div class="category-icon">🏛️</div>
+          <h3 data-i18n="cat_4_t">Sejarah & Budaya</h3>
+          <p data-i18n="cat_4_d">Jelajahi kisah masa lalu.</p>
+        </div>
+        <div class="category" data-category="Psikologi">
+          <div class="category-icon">🧠</div>
+          <h3 data-i18n="cat_5_t">Psikologi & Jiwa</h3>
+          <p data-i18n="cat_5_d">Memahami emosi dan fikiran.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section books-section" id="koleksi">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="kicker" data-i18n="books_kicker">Rak buku pilihan</div>
+          <h2 data-i18n="books_title">Koleksi bacaan kita</h2>
+        </div>
+        <p data-i18n="books_desc">Pilih mana-mana buku di bawah untuk membaca sinopsis lengkap, nilai murni, serta cadangan peringkat umur.</p>
+      </div>
+      
+      <div class="filters" role="group">
+        <button class="filter active" data-filter="Semua" data-i18n="filter_all">Semua buku</button>
+        <button class="filter" data-filter="Bahasa" data-i18n="filter_lang">Bahasa</button>
+        <button class="filter" data-filter="Cerita" data-i18n="filter_story">Cerita</button>
+        <button class="filter" data-filter="Ilmu" data-i18n="filter_sci">Ilmu</button>
+        <button class="filter" data-filter="Sejarah" data-i18n="filter_hist">Sejarah</button>
+        <button class="filter" data-filter="Psikologi" data-i18n="filter_psy">Psikologi & Falsafah</button>
+      </div>
+
+      <!-- Tool Backup / Reset -->
+      <div style="background: var(--paper); border: 1px dashed var(--line); border-radius: 16px; padding: 12px 18px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div style="font-size: 0.88rem; font-weight: 700; color: var(--ink);">
+          <span data-i18n="storage_title">💾 Pengurusan Kulit Buku (Penyimpanan & Cadangan):</span>
+          <div style="font-size: 0.78rem; font-weight: 500; color: var(--muted);" data-i18n="storage_sub">Kulit buku disimpan secara automatik dalam pelayar ini.</div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-secondary" onclick="exportCovers()" style="padding: 6px 12px; font-size: 0.8rem;">
+            📥 <span data-i18n="btn_export">Eksport</span>
+          </button>
+          <label class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; cursor: pointer;">
+            📤 <span data-i18n="btn_import">Import</span>
+            <input type="file" accept=".json" onchange="importCovers(event)" style="display: none;">
+          </label>
+          <button class="btn btn-secondary" onclick="resetCovers()" style="padding: 6px 12px; font-size: 0.8rem; color: #b94a48; border-color: #f2dede;">
+            🗑️ <span data-i18n="btn_reset">Reset Semula</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="book-grid" id="bookGrid">
+
+        <!-- BUKU 1 -->
+        <article class="book-card" data-category="Bahasa" id="card-1">
+          <div class="cover" id="cover-1">
+            <span class="cover-label">BAHASA & PERSAHABATAN</span>
+            <label class="upload-btn-label">📷 <span data-i18n="btn_change_cover">Ganti Kulit</span>
+              <input type="file" class="cover-input" accept="image/*" onchange="uploadCover(event, 1)">
+            </label>
+          </div>
+          <div class="book-info">
+            <h3 class="b-title">Inilah Kawan-kawan Saya</h3>
+            <div class="book-author b-author">Penulis: Norashikin Hashim</div>
+            <p class="b-short">Meneroka nilai murni persahabatan, sikap saling menghormati dan kesopanan.</p>
+            <div class="book-meta"><span class="b-pages">📄 14 Halaman</span><span class="b-target">👶 7–9 Tahun</span></div>
+            <button class="read-link" onclick="showBookDetails(1)" data-i18n="btn_details">Lihat Maklumat Buku →</button>
+          </div>
+        </article>
+
+        <!-- BUKU 2 -->
+        <article class="book-card" data-category="Bahasa" id="card-2">
+          <div class="cover" id="cover-2">
+            <span class="cover-label">BAHASA & PERSAHABATAN</span>
+            <label class="upload-btn-label">📷 <span data-i18n="btn_change_cover">Ganti Kulit</span>
+              <input type="file" class="cover-input" accept="image/*" onchange="uploadCover(event, 2)">
+            </label>
+          </div>
+          <div class="book-info">
+            <h3 class="b-title">Berbuat Baik dengan Kawan</h3>
+            <div class="book-author b-author">Penulis: Norashikin Hashim</div>
+            <p class="b-short">Panduan berbuat baik dan membina hubungan yang positif bersama rakan.</p>
+            <div class="book-meta"><span class="b-pages">📄 12 Halaman</span><span class="b-target">👶 7–9 Tahun</span></div>
+            <button class="read-link" onclick="showBookDetails(2)" data-i18n="btn_details">Lihat Maklumat Buku →</button>
+          </div>
+        </article>
+
+        <!-- BUKU 3 -->
+        <article class="book-card" data-category="Ilmu" id="card-3">
+          <div class="cover" id="cover-3">
+            <span class="cover-label">ILMU & NATURE</span>
+            <label class="upload-btn-label">📷 <span data-i18n="btn_change_cover">Ganti Kulit</span>
+              <input type="file" class="cover-input" accept="image/*" onchange="uploadCover(event, 3)">
+            </label>
+          </div>
+          <div class="book-info">
+            <h3 class="b-title">Kenali Dunia Saya: Pokok</h3>
+            <div class="book-author b-author">Penulis: Penerbitan Pendidikan</div>
+            <p class="b-short">Buku ilmu pengenalan tumbuhan dan kepentingan menjaga persekitaran alam sekitar.</p>
+            <div class="book-meta"><span class="b-pages">📄 15 Halaman</span><span class="b-target">👶 7–10 Tahun</span></div>
+            <button class="read-link" onclick="showBookDetails(3)" data-i18n="btn_details">Lihat Maklumat Buku →</button>
+          </div>
+        </article>
+
+        <!-- BUKU 4 -->
+        <article class="book-card" data-category="Cerita" id="card-4">
+          <div class="cover" id="cover-4">
+            <span class="cover-label">CERITA PERIBAHASA</span>
+            <label class="upload-btn-label">📷 <span data-i18n="btn_change_cover">Ganti Kulit</span>
+              <input type="file" class="cover-input" accept="image/*" onchange="uploadCover(event, 4)">
+            </label>
+          </div>
+          <div class="book-info">
+            <h3 class="b-title">Hendak Seribu Daya, Tak Nak Seribu Dalih</h3>
+            <div class="book-author b-author">Penulis: Maslina Yusoff</div>
+            <p class="b-short">Kisah peribahasa inspirasi tentang ikhtiar, semangat persahabatan, dan membaca.</p>
+            <div class="book-meta"><span class="b-pages">📄 37 Halaman</span><span class="b-target">👶 8–11 Tahun</span></div>
+            <button class="read-link" onclick="showBookDetails(4)" data-i18n="btn_details">Lihat Maklumat Buku →</button>
+          </div>
+        </article>
+
+        <!-- BUKU 5 -->
+        <article class="book-card" data-category="Sejarah" id="card-5">
+          <div class="cover" id="cover-5">
+            <span class="cover-label">CERITA RAKYAT</span>
+            <label class="upload-btn-label">📷 <span data-i18n="btn_change_cover">Ganti Kulit</span>
+              <input type="file" class="cover-input" accept="image/*" onchange="uploadCover(event, 5)">
+            </label>
+          </div>
+          <div class="book-info">
+            <h3 class="b-title">Koleksi Terpilih Cerita Rakyat Malaysia</h3>
+            <div class="book-author b-author">Penulis: Mohammad Shahidan & Rakan</div>
+            <p class="b-short">Himpunan warisan cerita rakyat Melayu kaya dengan pengajaran dan nilai-nilai murni.</p>
+            <div class="book-meta"><span class="b-pages">📄 174 Halaman</span><span class="b-target">👶 10–12 Tahun</span></div>
+            <button class="read-link" onclick="showBookDetails(5)" data-i18n="btn_details">Lihat Maklumat Buku →</button>
+          </div>
+        </article>
+
+        <!-- BUKU 6 -->
+        <article class="book-card" data-category="Psikologi" id="card-6">
+          <div class="cover" id="cover-6">
+            <span class="cover-label">PSIKOLOGI & EMOSI</span>
+            <label class="upload-btn-label">📷 <span data-i18n="btn_change_cover">Ganti Kulit</span>
+              <input type="file" class="cover-input" accept="image/*" onchange="uploadCover(event, 6)">
+            </label>
+          </div>
+          <div class="book-info">
+            <h3 class="b-title">Encik Katak Menemu Bual Pakar Psikologi</h3>
+            <div class="book-author b-author">Penulis: Robert de Board</div>
+            <p class="b-short">Kisah penyembuhan emosi Encik Katak melalui sesi terapi psikologi yang lembut dan bermakna.</p>
+            <div class="book-meta"><span class="b-pages">📄 224 Halaman</span><span class="b-target">👶 12+ Tahun</span></div>
+            <button class="read-link" onclick="showBookDetails(6)" data-i18n="btn_details">Lihat Maklumat Buku →</button>
+          </div>
+        </article>
+
+        <!-- BUKU 7 -->
+        <article class="book-card" data-category="Cerita" id="card-7">
+          <div class="cover" id="cover-7">
+            <span class="cover-label">FALSAFAH & CERITA</span>
+            <label class="upload-btn-label">📷 <span data-i18n="btn_change_cover">Ganti Kulit</span>
+              <input type="file" class="cover-input" accept="image/*" onchange="uploadCover(event, 7)">
+            </label>
+          </div>
+          <div class="book-info">
+            <h3 class="b-title">Pangeran Kecil (The Little Prince)</h3>
+            <div class="book-author b-author">Penulis: Antoine de Saint-Exupéry</div>
+            <p class="b-short">Pengembaraan merentas planet yang menyentuh jiwa tentang kasih sayang, kesetiaan dan persahabatan.</p>
+            <div class="book-meta"><span class="b-pages">📄 140 Halaman</span><span class="b-target">👶 9+ Tahun</span></div>
+            <button class="read-link" onclick="showBookDetails(7)" data-i18n="btn_details">Lihat Maklumat Buku →</button>
+          </div>
+        </article>
+
+        <!-- BUKU 8 -->
+        <article class="book-card" data-category="Sejarah" id="card-8">
+          <div class="cover" id="cover-8">
+            <span class="cover-label">AUTOBIOGRAFI & SEJARAH</span>
+            <label class="upload-btn-label">📷 <span data-i18n="btn_change_cover">Ganti Kulit</span>
+              <input type="file" class="cover-input" accept="image/*" onchange="uploadCover(event, 8)">
+            </label>
+          </div>
+          <div class="book-info">
+            <h3 class="b-title">Kisah Eksperimen Saya dengan Kebenaran</h3>
+            <div class="book-author b-author">Penulis: M.K. Gandhi</div>
+            <p class="b-short">Autobiografi inspirasi Mahatma Gandhi tentang pencarian kebenaran, kejujuran dan tanpa kekerasan.</p>
+            <div class="book-meta"><span class="b-pages">📄 508 Halaman</span><span class="b-target">👶 12+ Tahun</span></div>
+            <button class="read-link" onclick="showBookDetails(8)" data-i18n="btn_details">Lihat Maklumat Buku →</button>
+          </div>
+        </article>
+
+      </div>
+      <div class="empty-note" id="emptyNote" data-i18n="empty_note">Belum ada kad buku untuk kategori ini. Cuba kategori lain atau pilih "Semua". 🌱</div>
+    </div>
+  </section>
+
+  <!-- MODAL DETAIL BUKU -->
+  <div class="modal-overlay" id="bookModal" onclick="closeModalOnBg(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <span class="modal-badge" id="mBadge">KATEGORI</span>
+          <h3 class="modal-title" id="mTitle">Tajuk Buku</h3>
+          <div class="modal-author" id="mAuthor">Penulis: -</div>
+        </div>
+        <button class="modal-close" onclick="closeBookModal()" aria-label="Tutup">✕</button>
+      </div>
+
+      <div class="modal-details">
+        <div class="modal-detail-item">
+          <h4><span data-i18n="lbl_synopsis">📖 Sinopsis Buku</span></h4>
+          <p id="mSynopsis">Penerangan sinopsis akan dipaparkan di sini.</p>
+        </div>
+        <div class="modal-detail-item">
+          <h4><span data-i18n="lbl_values">✨ Nilai Murni</span></h4>
+          <p id="mValues">Nilai murni yang diperoleh.</p>
+        </div>
+        <div class="modal-detail-item">
+          <h4><span data-i18n="lbl_target">🎯 Sesuai Untuk</span></h4>
+          <p id="mTarget">Cadangan peringkat umur.</p>
+        </div>
+        <div class="modal-detail-item">
+          <h4><span data-i18n="lbl_info">📊 Maklumat Lanjut</span></h4>
+          <p id="mPages">Jumlah Halaman: -</p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeBookModal()" data-i18n="btn_back">← Kembali ke Koleksi Buku</button>
+        <a id="mCatalogBtn" class="btn btn-primary" href="#" target="_blank" rel="noopener" data-i18n="btn_catalog">Baca Buku Dalam Talian ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" id="aktiviti">
+    <div class="wrap journey">
+      <div class="journey-card">
+        <div class="kicker" data-i18n="j_kicker">Sedikit demi sedikit</div>
+        <h2 data-i18n="j_title">Jadikan membaca satu tabiat yang menyeronokkan.</h2>
+        <p data-i18n="j_desc">Pilih buku yang kamu suka, luangkan sedikit masa untuk membaca dan ceritakan perkara menarik yang kamu temui.</p>
+        <a href="#koleksi" class="btn btn-primary" data-i18n="j_btn">Pilih buku hari ini →</a>
+        <div class="journey-art" aria-hidden="true">🌳📚</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-mark">“</div>
+        <blockquote data-i18n="q_text">Semakin banyak kita membaca, semakin luas dunia yang dapat kita teroka.</blockquote>
+        <small data-i18n="q_sub">🌼 Pesanan untuk pembaca cilik</small>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-main">
+      <div>
+        <div class="footer-brand"><span class="brand-mark">📖</span> Sudut Bacaan Digital</div>
+        <p data-i18n="f_desc">Ruang membaca yang mesra, selesa dan penuh imaginasi. Semoga setiap halaman membuka pintu kepada pengetahuan baharu.</p>
+      </div>
+      <a href="#utama" class="btn btn-secondary" data-i18n="f_top">Kembali ke atas ↑</a>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Sudut Bacaan Digital</span>
+      <span data-i18n="f_credit">Direka dengan ♡ untuk pembaca cilik</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Real Book Cover Image & SVG Data for all 8 books - High Performance Scalable Vector Graphic Representations
+const defaultCovers = {
+  1: "https://online.anyflip.com/mjgum/ysln/files/shot.jpg",
+  2: "https://online.anyflip.com/mjgum/vjwz/files/shot.jpg",
+  // Book 3: Pokok
+  3: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 420'><rect width='300' height='420' fill='%23f2ea7d'/><path d='M0 0 C 100 80, 200 20, 300 90 L300 0 Z' fill='%23e83e8c'/><path d='M0 0 L300 0 L300 50 C 180 120, 90 20, 0 60 Z' fill='%23d81b60'/><circle cx='150' cy='210' r='85' fill='%23ba68c8' stroke='%238e24aa' stroke-width='6'/><circle cx='150' cy='210' r='78' fill='%234caf50'/><ellipse cx='150' cy='210' rx='50' ry='60' fill='%232e7d32'/><circle cx='150' cy='220' r='20' fill='%231b5e20'/><path d='M80 320 Q 150 220 220 320 Z' fill='%238bc34a'/><text x='150' y='75' font-family='Georgia, serif' font-weight='900' font-size='42' fill='%234a148c' text-anchor='middle'>Pokok</text><text x='150' y='360' font-family='sans-serif' font-size='12' font-weight='bold' fill='%23333' text-anchor='middle'>Cerita : Nazel Hashim Mohamad</text><text x='150' y='378' font-family='sans-serif' font-size='10' fill='%23555' text-anchor='middle'>Ilustrasi : Muhamad Faizal %26 Noor Azizi</text></svg>",
+  // Book 4: Hendak Seribu Daya
+  4: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 420'><rect width='300' height='420' fill='%23c8e6c9'/><rect x='10' y='10' width='280' height='400' fill='%23e0f7fa' rx='8'/><polygon points='210,12 288,12 288,40 210,25' fill='%2364b5f6'/><text x='250' y='28' font-family='sans-serif' font-weight='bold' font-size='11' fill='%23fff' text-anchor='middle'>TAHAP 1</text><circle cx='55' cy='55' r='28' fill='%23ffb74d'/><path d='M230 45 Q250 25 270 45 Q285 65 265 85 Q245 85 230 65 Z' fill='%23bbdefb'/><text x='150' y='105' font-family='Georgia, serif' font-weight='900' font-size='19' fill='%231a237e' text-anchor='middle'>Hendak Seribu Daya,</text><rect x='30' y='120' width='240' height='32' rx='16' fill='%23ffe082'/><text x='150' y='142' font-family='Georgia, serif' font-weight='900' font-size='17' fill='%23004d40' text-anchor='middle'>Tak Hendak Seribu Dalih</text><circle cx='105' cy='230' r='14' fill='%23ff8a65'/><rect x='95' y='244' width='20' height='40' fill='%23ffa726'/><circle cx='185' cy='240' r='14' fill='%23ff8a65'/><rect x='175' y='254' width='20' height='40' fill='%23fff'/><circle cx='142' cy='295' r='10' fill='%23ffffff' stroke='%23333' stroke-width='2'/><path d='M20 320 Q150 310 280 320 L280 400 L20 400 Z' fill='%2381c784'/><text x='150' y='385' font-family='sans-serif' font-weight='bold' font-size='12' fill='%23263238' text-anchor='middle'>Karya %26 Ilustrasi : AimanZul</text></svg>",
+  // Book 5: Cerita Rakyat Malaysia
+  5: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 420'><defs><linearGradient id='bg5' x1='0' y1='0' x2='0' y2='1'><stop offset='0%' stop-color='%23512da8'/><stop offset='50%' stop-color='%237b1fa2'/><stop offset='100%' stop-color='%23d84315'/></linearGradient></defs><rect width='300' height='420' fill='url(%23bg5)'/><text x='150' y='95' font-family='Georgia, serif' font-style='italic' font-size='22' fill='%23ffe082' text-anchor='middle'>Koleksi Terpilih</text><text x='150' y='135' font-family='sans-serif' font-weight='900' font-size='28' fill='%23ffeb3b' text-anchor='middle'>Cerita Rakyat</text><text x='150' y='175' font-family='sans-serif' font-weight='900' font-size='34' fill='%23e0f7fa' text-anchor='middle'>Malaysia</text><path d='M10 330 C 50 250, 130 250, 160 330 Z' fill='%23261204' opacity='0.75'/><circle cx='60' cy='290' r='28' fill='%23261204' opacity='0.75'/><text x='150' y='355' font-family='sans-serif' font-size='11' fill='%23ffecb3' text-anchor='middle'>Diceritakan semula oleh</text><text x='150' y='375' font-family='sans-serif' font-weight='bold' font-size='12' fill='%23fff' text-anchor='middle'>Mohammad Shahidan dan lain-lain</text></svg>",
+  // Book 6: Counselling For Toads / 蛤蟆先生去看心理医生
+  6: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 420'><rect width='300' height='420' fill='%23fcfbfa'/><text x='25' y='35' font-family='sans-serif' font-size='11' font-weight='bold' fill='%23333'>Routledge</text><text x='150' y='80' font-family='Georgia, serif' font-size='18' font-weight='bold' fill='%2300897b' text-anchor='middle'>COUNSELLING FOR TOADS:</text><text x='150' y='105' font-family='Georgia, serif' font-size='16' font-weight='bold' fill='%2300897b' text-anchor='middle'>A PSYCHOLOGICAL ADVENTURE</text><text x='150' y='145' font-family='Georgia, serif' font-size='14' fill='%2300695c' text-anchor='middle'>Robert de Board</text><circle cx='80' cy='210' r='42' fill='%2300897b'/><text x='80' y='200' font-family='sans-serif' font-size='11' font-weight='bold' fill='%23fff' text-anchor='middle'>英国经典</text><text x='80' y='218' font-family='sans-serif' font-size='10' fill='%23fff' text-anchor='middle'>心理咨询入门书</text><path d='M180 180 Q170 210 175 230 Q185 240 180 260' stroke='%2300897b' stroke-width='12' fill='none' stroke-linecap='round'/><circle cx='185' cy='175' r='12' fill='%2300897b'/><text x='150' y='300' font-family='sans-serif' font-weight='900' font-size='26' fill='%2300695c' text-anchor='middle'>蛤蟆先生</text><text x='150' y='335' font-family='sans-serif' font-weight='900' font-size='26' fill='%2300695c' text-anchor='middle'>去看心理医生</text><text x='150' y='370' font-family='sans-serif' font-size='11' fill='%23666' text-anchor='middle'>［英］罗伯特・戴博德 著</text></svg>",
+  // Book 7: The Little Prince / 小王子
+  7: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 420'><rect width='300' height='420' fill='%230d47a1'/><text x='150' y='50' font-family='Georgia, serif' font-size='22' font-weight='bold' fill='%23fff59d' text-anchor='middle'>The Little Prince</text><text x='150' y='125' font-family='sans-serif' font-weight='900' font-size='48' fill='%23ffffff' text-anchor='middle'>小王子</text><circle cx='55' cy='180' r='18' fill='%23fbc02d'/><circle cx='150' cy='260' r='8' fill='%23ffeb3b'/><polygon points='230,100 234,110 245,110 236,117 239,128 230,121 221,128 224,117 215,110 226,110' fill='%23ffeb3b'/><ellipse cx='170' cy='360' rx='110' ry='70' fill='%239e9e9e'/><circle cx='235' cy='225' r='7' fill='%23ff8a65'/><rect x='232' y='232' width='6' height='22' fill='%2381c784'/><path d='M235 220 C220 200, 215 190, 235 180 C255 190, 250 200, 235 220 Z' fill='none' stroke='%23e0e0e0' stroke-width='1.5'/><text x='150' y='398' font-family='sans-serif' font-size='10' fill='%23bbdefb' text-anchor='middle'>［法］圣埃克苏佩里 著</text></svg>",
+  // Book 8: Gandhi / 莫汉达斯·卡拉姆昌德·甘地
+  8: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 420'><defs><linearGradient id='bg8' x1='0' y1='0' x2='0' y2='1'><stop offset='0%' stop-color='%231a237e'/><stop offset='100%' stop-color='%23311b92'/></linearGradient></defs><rect width='300' height='420' fill='url(%23bg8)'/><text x='150' y='55' font-family='Georgia, serif' font-size='16' font-weight='bold' fill='%23ffe082' text-anchor='middle'>MAHATMA GANDHI</text><text x='150' y='110' font-family='sans-serif' font-weight='900' font-size='22' fill='%23ffffff' text-anchor='middle'>Kisah Eksperimen Saya</text><text x='150' y='140' font-family='sans-serif' font-weight='900' font-size='20' fill='%23ffe082' text-anchor='middle'>dengan Kebenaran</text><circle cx='150' cy='230' r='60' fill='none' stroke='%23ffb74d' stroke-width='3'/><circle cx='125' cy='230' r='22' fill='none' stroke='%23fff' stroke-width='2'/><circle cx='175' cy='230' r='22' fill='none' stroke='%23fff' stroke-width='2'/><line x1='147' y1='230' x2='153' y2='230' stroke='%23fff' stroke-width='3'/><text x='150' y='340' font-family='sans-serif' font-size='12' fill='%23e0e0e0' text-anchor='middle'>The Story of My Experiments</text><text x='150' y='360' font-family='sans-serif' font-size='12' fill='%23e0e0e0' text-anchor='middle'>with Truth</text></svg>"
+};
+
+// Multilingual i18n Dictionary
+const i18n = {
+  ms: {
+    top_subtitle: "📚 Ruang kecil untuk imaginasi yang besar",
+    top_welcome: "Selamat datang ke Sudut Bacaan Digital ✨",
+    brand_sub: "DIGITAL • BACA • TEROKA",
+    nav_home: "Utama", nav_cat: "Kategori", nav_books: "Koleksi Buku", nav_read: "Jom Membaca",
+    hero_eyebrow: "🌿 Selamat datang, pembaca cilik!",
+    hero_title: "Setiap buku,<br><span>sebuah pengembaraan.</span>",
+    hero_desc: "Singgah sebentar, pilih sebuah buku dan biarkan imaginasi membawa kamu ke dunia yang baharu.",
+    hero_btn1: "📚 Teroka Buku <span>→</span>", hero_btn2: "Cari Ikut Kategori",
+    hero_note: "Tempat yang selesa untuk membaca dan berimaginasi.",
+    cat_kicker: "Pilih pengembaraan", cat_title: "Teroka ikut kategori",
+    cat_desc: "Setiap kategori membawa cerita dan pengetahuan yang berbeza.",
+    cat_1_t: "Cerita & Dongeng", cat_1_d: "Kisah menarik penuh imaginasi.",
+    cat_2_t: "Ilmu & Pengetahuan", cat_2_d: "Kenali dunia di sekeliling kita.",
+    cat_3_t: "Bahasa & Perkataan", cat_3_d: "Belajar perkataan baharu.",
+    cat_4_t: "Sejarah & Budaya", cat_4_d: "Jelajahi kisah masa lalu.",
+    cat_5_t: "Psikologi & Jiwa", cat_5_d: "Memahami emosi dan fikiran.",
+    books_kicker: "Rak buku pilihan", books_title: "Koleksi bacaan kita",
+    books_desc: "Pilih mana-mana buku di bawah untuk membaca sinopsis lengkap, nilai murni, serta cadangan peringkat umur.",
+    filter_all: "Semua buku", filter_lang: "Bahasa", filter_story: "Cerita", filter_sci: "Ilmu", filter_hist: "Sejarah", filter_psy: "Psikologi & Falsafah",
+    storage_title: "💾 Pengurusan Kulit Buku:", storage_sub: "Disimpan secara automatik dalam pelayar.",
+    btn_export: "Eksport", btn_import: "Import", btn_reset: "Reset Semula",
+    btn_change_cover: "Ganti Kulit", btn_details: "Lihat Maklumat Buku →",
+    empty_note: "Belum ada kad buku untuk kategori ini.",
+    lbl_synopsis: "📖 Sinopsis Buku", lbl_values: "✨ Nilai Murni", lbl_target: "🎯 Sesuai Untuk", lbl_info: "📊 Maklumat Lanjut",
+    btn_back: "← Kembali ke Koleksi Buku", btn_catalog: "Baca Buku Dalam Talian ↗",
+    j_kicker: "Sedikit demi sedikit", j_title: "Jadikan membaca satu tabiat yang menyeronokkan.",
+    j_desc: "Pilih buku yang kamu suka, luangkan sedikit masa untuk membaca dan ceritakan perkara menarik yang kamu temui.",
+    j_btn: "Pilih buku hari ini →", q_text: "Semakin banyak kita membaca, semakin luas dunia yang dapat kita teroka.",
+    q_sub: "🌼 Pesanan untuk pembaca cilik", f_desc: "Ruang membaca yang mesra, selesa dan penuh imaginasi.",
+    f_top: "Kembali ke atas ↑", f_credit: "Direka dengan ♡ untuk pembaca cilik"
+  },
+  zh: {
+    top_subtitle: "📚 小小天地，无限想象",
+    top_welcome: "欢迎来到多语数字阅读角 ✨",
+    brand_sub: "数字 • 阅读 • 探索",
+    nav_home: "首页", nav_cat: "图书分类", nav_books: "图书藏书", nav_read: "快乐阅读",
+    hero_eyebrow: "🌿 欢迎你，小读者！",
+    hero_title: "每一本书，<br><span>都是一场奇幻冒险。</span>",
+    hero_desc: "停下脚步，挑选一本喜欢的图书，让想象力带你前往全新的世界！",
+    hero_btn1: "📚 探索图书 <span>→</span>", hero_btn2: "按分类查找",
+    hero_note: "温馨舒适的阅读与想象天地。",
+    cat_kicker: "开启冒险", cat_title: "按分类探索",
+    cat_desc: "每个分类都蕴含着不一样的故事与知识，选择你最感兴趣的一门吧！",
+    cat_1_t: "故事与童话", cat_1_d: "充满想象力的奇妙故事。",
+    cat_2_t: "科学与自然", cat_2_d: "探索我们周围的大自然。",
+    cat_3_t: "语言与词汇", cat_3_d: "学习新词汇与丰富表达。",
+    cat_4_t: "历史与文化", cat_4_d: "领略悠久的历史与传统。",
+    cat_5_t: "心理与心灵", cat_5_d: "理解情绪与内心世界。",
+    books_kicker: "精选书架", books_title: "我们的阅读馆藏",
+    books_desc: "点击下方任意图书查看完整简介、核心价值观及建议阅读年龄段。",
+    filter_all: "全部图书", filter_lang: "语言", filter_story: "故事", filter_sci: "科学", filter_hist: "历史", filter_psy: "心理哲学",
+    storage_title: "💾 封面管理:", storage_sub: "已自动保存在浏览器中。",
+    btn_export: "导出备份", btn_import: "导入备份", btn_reset: "恢复默认",
+    btn_change_cover: "更换封面", btn_details: "查看图书详情 →",
+    empty_note: "该分类下暂无图书，请选择其他分类或查看全部。",
+    lbl_synopsis: "📖 内容简介", lbl_values: "✨ 核心价值观", lbl_target: "🎯 适合年龄段", lbl_info: "📊 详细信息",
+    btn_back: "← 返回图书馆藏", btn_catalog: "在线阅读图书 ↗",
+    j_kicker: "日积月累", j_title: "让阅读成为一种快乐的习惯。",
+    j_desc: "挑选一本你喜欢的书，每天花一点时间阅读，并与大家分享其中的趣事吧！",
+    j_btn: "今天就挑选一本吧 →", q_text: "读的书越多，我们能探索的世界就越辽阔。",
+    q_sub: "🌼 寄语小读者", f_desc: "温馨舒适且充满想象力的数字阅读空间。",
+    f_top: "回到顶部 ↑", f_credit: "用心为小读者倾情设计 ♡"
+  },
+  en: {
+    top_subtitle: "📚 Small space for big imaginations",
+    top_welcome: "Welcome to the Digital Reading Corner ✨",
+    brand_sub: "DIGITAL • READ • EXPLORE",
+    nav_home: "Home", nav_cat: "Categories", nav_books: "Book Collection", nav_read: "Let's Read",
+    hero_eyebrow: "🌿 Welcome, young readers!",
+    hero_title: "Every book,<br><span>an adventure awaits.</span>",
+    hero_desc: "Pause for a moment, pick a book, and let your imagination take you to new horizons!",
+    hero_btn1: "📚 Explore Books <span>→</span>", hero_btn2: "Search by Category",
+    hero_note: "A cozy place for reading and dreaming.",
+    cat_kicker: "Choose your adventure", cat_title: "Explore by Category",
+    cat_desc: "Each category brings unique stories and knowledge to discover.",
+    cat_1_t: "Stories & Tales", cat_1_d: "Imaginative and exciting stories.",
+    cat_2_t: "Science & Nature", cat_2_d: "Discover the world around us.",
+    cat_3_t: "Language & Words", cat_3_d: "Learn new vocabulary.",
+    cat_4_t: "History & Culture", cat_4_d: "Explore legends from the past.",
+    cat_5_t: "Psychology & Soul", cat_5_d: "Understand emotions and minds.",
+    books_kicker: "Featured Shelf", books_title: "Our Reading Collection",
+    books_desc: "Select any book below to view its full synopsis, moral values, and recommended age group.",
+    filter_all: "All Books", filter_lang: "Language", filter_story: "Stories", filter_sci: "Science", filter_hist: "History", filter_psy: "Psychology",
+    storage_title: "💾 Cover Manager:", storage_sub: "Saved automatically in browser.",
+    btn_export: "Export", btn_import: "Import", btn_reset: "Reset Default",
+    btn_change_cover: "Change Cover", btn_details: "View Book Details →",
+    empty_note: "No books found in this category.",
+    lbl_synopsis: "📖 Book Synopsis", lbl_values: "✨ Moral Values", lbl_target: "🎯 Recommended For", lbl_info: "📊 Additional Info",
+    btn_back: "← Back to Collection", btn_catalog: "Read Online ↗",
+    j_kicker: "Step by step", j_title: "Make reading a joyful daily habit.",
+    j_desc: "Pick a book you love, spend time reading, and share the wondrous ideas you find.",
+    j_btn: "Choose a book today →", q_text: "The more that you read, the more places you will go.",
+    q_sub: "🌼 A note for young readers", f_desc: "A warm, inspiring digital reading corner.",
+    f_top: "Back to top ↑", f_credit: "Crafted with ♡ for young readers"
+  }
+};
+
+// Books Data
+const booksData = {
+  1: {
+    categoryKey: "BAHASA", catalogUrl: "https://anyflip.com/mjgum/ysln/basic",
+    ms: { title: "Inilah Kawan-kawan Saya", author: "Penulis: Norashikin Hashim", category: "BAHASA & PERSAHABATAN", short: "Meneroka nilai murni persahabatan, sikap saling menghormati dan kesopanan.", synopsis: "Buku ini menceritakan kisah pergaulan seharian anak-anak bersama rakan. Memandu murid bertutur dengan sopan dan mesra.", values: "Persahabatan, Sikap Menghormati, Kesopanan", target: "7–9 Tahun", pagesLabel: "14 Halaman" },
+    zh: { title: "这就是我的朋友们", author: "作者：Norashikin Hashim", category: "语言与友谊", short: "探索友谊的真谛、相互尊重与有礼貌的交往态度。", synopsis: "通过温情日常故事引导孩子学会尊重不同性格的朋友，并懂礼貌、善沟通。", values: "珍视友谊、相互尊重、礼貌待人", target: "7–9 岁", pagesLabel: "14 页" },
+    en: { title: "These Are My Friends", author: "Author: Norashikin Hashim", category: "LANGUAGE & FRIENDSHIP", short: "Exploring values of friendship, mutual respect, and politeness.", synopsis: "A friendly story guiding children to appreciate friendships and practice good manners.", values: "Friendship, Mutual Respect, Politeness", target: "Ages 7–9", pagesLabel: "14 Pages" }
+  },
+  2: {
+    categoryKey: "BAHASA", catalogUrl: "https://online.anyflip.com/mjgum/vjwz/mobile/index.html",
+    ms: { title: "Berbuat Baik dengan Kawan", author: "Penulis: Norashikin Hashim", category: "BAHASA & PERSAHABATAN", short: "Panduan berbuat baik dan membina hubungan yang positif bersama rakan.", synopsis: "Kisah yang menekankan amalan berbuat baik, membantu dan prihatin sesama kawan.", values: "Berbuat Baik, Tolong-menolong, Empati", target: "7–9 Tahun", pagesLabel: "12 Halaman" },
+    zh: { title: "与朋友友善相处", author: "作者：Norashikin Hashim", category: "语言与友谊", short: "学会友善相处，建立积极融洽的朋友关系。", synopsis: "通过简单故事展现乐于助人与分享如何构建真挚友谊。", values: "行善友爱、乐于助人、关怀同理心", target: "7–9 岁", pagesLabel: "12 页" },
+    en: { title: "Being Kind to Friends", author: "Author: Norashikin Hashim", category: "LANGUAGE & FRIENDSHIP", short: "A gentle guide on kindness and building positive friendships.", synopsis: "Highlights daily acts of kindness, sharing, and empathy among young friends.", values: "Kindness, Helping Others, Empathy", target: "Ages 7–9", pagesLabel: "12 Pages" }
+  },
+  3: {
+    categoryKey: "ILMU", catalogUrl: "https://www.google.com/search?q=Kenali+Dunia+Saya+Pokok",
+    ms: { title: "Kenali Dunia Saya: Pokok", author: "Penulis: Penerbitan Pendidikan", category: "ILMU & PENGETAHUAN", short: "Buku ilmu pengenalan tumbuhan dan kepentingan menjaga alam sekitar.", synopsis: "Buku ilmiah asas mengenai tumbuh-tumbuhan, oksigen dan keindahan alam.", values: "Menghargai Alam Sekitar, Tanggungjawab", target: "7–10 Tahun", pagesLabel: "15 Halaman" },
+    zh: { title: "认识我的世界：树木", author: "作者：教育出版社", category: "科学与自然", short: "认识植物与树木，懂得保护绿色自然环境。", synopsis: "科普入门书，了解树木造氧与保护环境的重要性。", values: "爱护自然、环保责任心", target: "7–10 岁", pagesLabel: "15 页" },
+    en: { title: "Discover My World: Trees", author: "Author: Educational Publications", category: "SCIENCE & NATURE", short: "An introductory book on plants and environmental care.", synopsis: "A foundational science reader showing how trees support nature and life.", values: "Environmental Care, Responsibility", target: "Ages 7–10", pagesLabel: "15 Pages" }
+  },
+  4: {
+    categoryKey: "CERITA", catalogUrl: "https://www.google.com/search?q=Hendak+Seribu+Daya+Maslina+Yusoff",
+    ms: { title: "Hendak Seribu Daya, Tak Nak Seribu Dalih", author: "Penulis: Maslina Yusoff", category: "CERITA PERIBAHASA", short: "Kisah peribahasa inspirasi tentang ikhtiar, semangat persahabatan, dan membaca.", synopsis: "Kisah usaha gigih murid tanpa memberi alasan demi mencapai cita-cita.", values: "Kegigihan, Minat Membaca, Semangat Kawan", target: "8–11 Tahun", pagesLabel: "37 Halaman" },
+    zh: { title: "有志者事竟成", author: "作者：Maslina Yusoff", category: "谚语故事", short: "关于坚毅不拔、友谊协作与热爱阅读的励志故事。", synopsis: "围绕知名马来谚语展开，讲述好朋友们克服困难、热爱阅读的过程。", values: "坚毅努力、热爱阅读、不轻言放弃", target: "8–11 岁", pagesLabel: "37 页" },
+    en: { title: "Where There's a Will, There's a Way", author: "Author: Maslina Yusoff", category: "PROVERB STORIES", short: "An inspiring story on determination, friendship, and reading habits.", synopsis: "Follows young friends who persevere without excuses to achieve their dreams.", values: "Perseverance, Reading Culture, Teamwork", target: "Ages 8–11", pagesLabel: "37 Pages" }
+  },
+  5: {
+    categoryKey: "SEJARAH", catalogUrl: "https://www.google.com/search?q=Koleksi+Terpilih+Cerita+Rakyat+Malaysia+Mohammad+Shahidan",
+    ms: { title: "Koleksi Terpilih Cerita Rakyat Malaysia", author: "Penulis: Mohammad Shahidan & Rakan", category: "SEJARAH & CERITA RAKYAT", short: "Himpunan warisan cerita rakyat Melayu kaya dengan pengajaran dan nilai murni.", synopsis: "Cerita rakyat penuh kebijaksanaan dan teladan moral zaman berzaman.", values: "Kebijaksanaan, Keberanian, Cinta Warisan", target: "10–12 Tahun", pagesLabel: "174 Halaman" },
+    zh: { title: "马来西亚民间故事精选集", author: "作者：Mohammad Shahidan 等", category: "历史与民间故事", short: "丰富多彩的马来民间故事，充满智慧与道德启示。", synopsis: "代代相传的精选民间故事，蕴含深刻道德与文化传承价值。", values: "智慧、勇敢、珍视文化遗产", target: "10–12 岁", pagesLabel: "174 页" },
+    en: { title: "Selected Malaysian Folklore", author: "Authors: Mohammad Shahidan et al.", category: "HISTORY & FOLKLORE", short: "A collection of Malay folktales rich in moral lessons and heritage.", synopsis: "A rich compilation of traditional folklore instilling wisdom and heritage.", values: "Wisdom, Courage, Cultural Pride", target: "Ages 10–12", pagesLabel: "174 Pages" }
+  },
+  6: {
+    categoryKey: "PSIKOLOGI", catalogUrl: "https://www.google.com/search?q=Mr+Toad+Sees+a+Psychotherapist+Robert+de+Board",
+    ms: { title: "Encik Katak Menemu Bual Pakar Psikologi", author: "Penulis: Robert de Board", category: "PSIKOLOGI & EMOSI", short: "Kisah penyembuhan emosi Encik Katak melalui sesi terapi psikologi yang lembut.", synopsis: "Kisah psikologi santai tentang Encik Katak yang memahami emosinya bersama Encik Heron.", values: "Kesedaran Emosi, Pertumbuhan Diri", target: "12+ Tahun", pagesLabel: "224 Halaman" },
+    zh: { title: "蛤蟆先生去看心理医生", author: "作者：罗伯特·戴博德 (Robert de Board)", category: "心理与情感", short: "蛤蟆先生通过心理咨询重获生机与自我疗愈的温暖故事。", synopsis: "通过童话展现心理学原理，讲述蛤蟆先生探索内心与拥抱自我的旅程。", values: "情绪觉察、勇敢求助、自我成长", target: "12 岁以上", pagesLabel: "224 页" },
+    en: { title: "Mr Toad Sees a Psychotherapist", author: "Author: Robert de Board", category: "PSYCHOLOGY & EMOTIONS", short: "A gentle tale of emotional healing through psychotherapy.", synopsis: "A classic story introducing emotional wellness and self-understanding.", values: "Emotional Awareness, Self-Acceptance", target: "Ages 12+", pagesLabel: "224 Pages" }
+  },
+  7: {
+    categoryKey: "CERITA", catalogUrl: "https://www.google.com/search?q=The+Little+Prince+Antoine+de+Saint-Exupery",
+    ms: { title: "Pangeran Kecil (The Little Prince)", author: "Penulis: Antoine de Saint-Exupéry", category: "FALSAFAH & CERITA", short: "Pengembaraan merentas planet tentang kasih sayang, kesetiaan dan persahabatan.", synopsis: "Dongeng klasik yang mengajar kita bahawa perkara terindah hanya dapat dilihat dengan hati.", values: "Kasih Sayang, Kesetiaan, Tanggungjawab", target: "9+ Tahun", pagesLabel: "140 Halaman" },
+    zh: { title: "小王子 (The Little Prince)", author: "作者：安托万·德·圣-埃克苏佩里", category: "哲学与童话", short: "跨越星际的奇幻之旅，诠释爱、责任与友谊的永恒经典。", synopsis: "享誉世界的经典巨作，用纯真视角探索爱与人生哲理。", values: "爱与被爱、责任感、纯真之心", target: "9 岁以上", pagesLabel: "140 页" },
+    en: { title: "The Little Prince", author: "Author: Antoine de Saint-Exupéry", category: "PHILOSOPHY & TALES", short: "A poetic journey about love, responsibility, and friendship.", synopsis: "A timeless tale about a young prince visiting planets, learning deep life lessons.", values: "Love, Responsibility, Pure Heart", target: "Ages 9+", pagesLabel: "140 Pages" }
+  },
+  8: {
+    categoryKey: "SEJARAH", catalogUrl: "https://www.google.com/search?q=The+Story+of+My+Experiments+with+Truth+Gandhi",
+    ms: { title: "Kisah Eksperimen Saya dengan Kebenaran", author: "Penulis: M.K. Gandhi", category: "AUTOBIOGRAFI & SEJARAH", short: "Autobiografi Mahatma Gandhi tentang pencarian kebenaran dan tanpa kekerasan.", synopsis: "Catatan hidup Gandhi mengamalkan kejujuran, disiplin diri dan prinsip Ahimsa.", values: "Kebenaran (Satyagraha), Tanpa Kekerasan (Ahimsa)", target: "12+ Tahun", pagesLabel: "508 Halaman" },
+    zh: { title: "我体验真理的故事", author: "作者：莫汉达斯·卡拉姆昌德·甘地", category: "自传与历史", short: "甘地记录追求真理、非暴力与道德修养的自传巨著。", synopsis: "坦诚记录甘地对非暴力与坚持真理信念的追求。", values: "坚持真理、非暴力和平、自律修身", target: "12 岁以上", pagesLabel: "508 页" },
+    en: { title: "The Story of My Experiments with Truth", author: "Author: M.K. Gandhi", category: "AUTOBIOGRAPHY & HISTORY", short: "Gandhi's autobiography on his pursuit of truth and non-violence.", synopsis: "A personal account detailing Gandhi's life principles and moral courage.", values: "Truth, Non-Violence, Moral Courage", target: "Ages 12+", pagesLabel: "508 Pages" }
+  }
+};
+
+let currentLang = 'ms';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase().includes(lang) || (lang==='ms' && btn.textContent==='MS'));
+  });
+
+  const dict = i18n[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.innerHTML = dict[key];
+  });
+
+  for (let id in booksData) {
+    const card = document.getElementById(`card-${id}`);
+    if (!card) continue;
+    const data = booksData[id][lang];
+    
+    card.querySelector('.b-title').textContent = data.title;
+    card.querySelector('.b-author').textContent = data.author;
+    card.querySelector('.b-short').textContent = data.short;
+    card.querySelector('.b-pages').textContent = '📄 ' + data.pagesLabel;
+    card.querySelector('.b-target').textContent = '👶 ' + data.target;
+  }
+}
+
+// Menu toggle
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+menuToggle.addEventListener('click', () => {
+  const open = navLinks.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', String(open));
+});
+
+// Category filtering
+const filterButtons = document.querySelectorAll('.filter');
+const cards = document.querySelectorAll('.book-card');
+const emptyNote = document.getElementById('emptyNote');
+
+filterButtons.forEach(button => button.addEventListener('click', () => {
+  filterButtons.forEach(b => b.classList.remove('active'));
+  button.classList.add('active');
+  const filter = button.dataset.filter;
+  let visible = 0;
+  cards.forEach(card => {
+    const show = filter === 'Semua' || card.dataset.category === filter;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  emptyNote.style.display = visible ? 'none' : 'block';
+}));
+
+// Quick jump category
+document.querySelectorAll('.category[data-category]').forEach(link => link.addEventListener('click', () => {
+  const category = link.dataset.category;
+  const button = [...filterButtons].find(b => b.dataset.filter === category);
+  if (button) {
+    button.click();
+    document.getElementById('koleksi').scrollIntoView({ behavior: 'smooth' });
+  }
+}));
+
+// Modal functions
+function showBookDetails(id) {
+  const book = booksData[id];
+  if (!book) return;
+  const langData = book[currentLang];
+
+  document.getElementById('mBadge').textContent = langData.category;
+  document.getElementById('mTitle').textContent = langData.title;
+  document.getElementById('mAuthor').textContent = langData.author;
+  document.getElementById('mSynopsis').textContent = langData.synopsis;
+  document.getElementById('mValues').textContent = langData.values;
+  document.getElementById('mTarget').textContent = langData.target;
+  document.getElementById('mPages').textContent = (currentLang === 'zh' ? '总页数: ' : (currentLang === 'en' ? 'Total Pages: ' : 'Jumlah Halaman: ')) + langData.pagesLabel;
+  document.getElementById('mCatalogBtn').href = book.catalogUrl;
+
+  document.getElementById('bookModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBookModal() {
+  document.getElementById('bookModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnBg(e) {
+  if (e.target.id === 'bookModal') closeBookModal();
+}
+
+// Upload & Cover Storage
+function uploadCover(event, id) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const imageData = e.target.result;
+    applyCoverImage(id, imageData);
+    try {
+      localStorage.setItem(`book_cover_${id}`, imageData);
+    } catch (err) {
+      console.warn("Storage quota limit reached.", err);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyCoverImage(id, imageData) {
+  const coverDiv = document.getElementById(`cover-${id}`);
+  if (coverDiv) {
+    coverDiv.style.backgroundImage = `url('${imageData}')`;
+  }
+}
+
+function initCovers() {
+  for (let id in booksData) {
+    const saved = localStorage.getItem(`book_cover_${id}`);
+    if (saved) {
+      applyCoverImage(id, saved);
+    } else if (defaultCovers[id]) {
+      applyCoverImage(id, defaultCovers[id]);
+    }
+  }
+}
+
+function resetCovers() {
+  const confirmMsg = currentLang === 'zh' ? '确定要重置所有封面吗？' : (currentLang === 'en' ? 'Are you sure you want to reset all covers?' : 'Adakah anda pasti untuk memadam semua kulit buku tersuai?');
+  if (confirm(confirmMsg)) {
+    for (let id in booksData) {
+      localStorage.removeItem(`book_cover_${id}`);
+      if (defaultCovers[id]) {
+        applyCoverImage(id, defaultCovers[id]);
+      }
+    }
+  }
+}
+
+document.getElementById('year').textContent = new Date().getFullYear();
+initCovers();
+</script>
+</body>
+</html>
